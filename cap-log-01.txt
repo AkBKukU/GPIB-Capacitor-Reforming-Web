@@ -1,0 +1,4 @@
+Preforming:
+
+1: 280kohm
+2: 260kohm
