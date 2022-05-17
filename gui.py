@@ -112,6 +112,7 @@ class GUI:
 
             i="log-"+str(index)
             wins[i]={"win":curses.newwin(lines, width-2, self.nextY, 1+self.nextX),"values":1}
+            self.nextY += lines
             wins[i]["win"].border(0)
             tx=1
             ty=1
