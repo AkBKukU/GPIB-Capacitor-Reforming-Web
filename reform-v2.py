@@ -3,6 +3,7 @@
 import sys
 import signal
 import time
+import random
 
 from dmm import DMM34401A
 from psu import PSU6633A
@@ -25,8 +26,9 @@ dmm_i=240
 
 gui.addReadout(psu_v,"Voltage","V","PSU")
 gui.addReadout(psu_i,"Current","mA","PSU")
+
 dmm_i_id=gui.addReadout(dmm_i,"Current","uA","DMM")
-log_i=gui.addLogTable(["PSU Current","PSU Voltage","DMM Current","Cap Voltate","Cap Current"],"test.csv")
+log_i=gui.addLogTable(["PSU Current","PSU Voltage","DMM Current","Cap Voltage","Cap Current"],"test.csv")
 
 
 while(True):
@@ -34,5 +36,5 @@ while(True):
     time.sleep(0.1)
     dmm_i+=5
     gui.updateReadout(dmm_i_id,dmm_i)
-    gui.updateLogTable(log_i,["PSU Current","PSU Voltage",dmm_i,"Cap Voltate","Cap Current"])
+    gui.updateLogTable(log_i,[random.randint(1,30),random.randint(1,30),dmm_i,random.randint(1,30),random.randint(1,30)])
 

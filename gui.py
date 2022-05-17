@@ -57,7 +57,7 @@ class GUI:
         self.s.refresh()
         height, width = self.s.getmaxyx() # get the window size
         self.s.addstr(0, 0, " " * width, curses.color_pair(1))
-        self.s.addstr(0, 0, "Test GUI", curses.color_pair(1))
+        self.s.addstr(0, 0, "Capacitor Reforming GP-IB Automation", curses.color_pair(1))
 
         wins={}
         for index , readout in enumerate(self.readouts):
