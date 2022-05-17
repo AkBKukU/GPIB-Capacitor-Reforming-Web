@@ -15,8 +15,12 @@ class GUI:
         self.readWid = 30
         self.readX = 0
 
-    def addReadout(self, value, label,group=""):
-        self.readouts.append([value,label,group])
+    def addReadout(self, value, label,unit="",group=""):
+        self.readouts.append({"value":str(value),"label":label,"group":group,"unit":unit})
+        return len(self.readouts)-1
+
+    def updateReadout(self,index, value):
+        self.readouts[index]["value"]=str(value)
 
     def update(self):
         self.readX = 0
@@ -29,10 +33,10 @@ class GUI:
         wins={}
         for index , readout in enumerate(self.readouts):
             group=False
-            if readout[2] == "":
+            if readout["group"] == "":
                 winid=index
             else:
-                winid=readout[2]
+                winid=readout["group"]
                 group=True
 
             # curses.newwin(height, width, begin_y, begin_x)
@@ -48,12 +52,12 @@ class GUI:
 
             wins[winid]["win"].border(0)
             if group:
-                wins[winid]["win"].addstr(0,2,readout[2])
-                wins[winid]["win"].addstr(wins[winid]["values"],1,readout[1])
-                wins[winid]["win"].addstr(wins[winid]["values"],2+len(readout[1]),": " +readout[0])
+                wins[winid]["win"].addstr(0,2,readout["group"])
+                wins[winid]["win"].addstr(wins[winid]["values"],1,readout["label"])
+                wins[winid]["win"].addstr(wins[winid]["values"],2+len(readout["label"]),": " +readout["value"]+readout["unit"])
             else:
-                wins[winid]["win"].addstr(0,2,readout[1])
-                wins[winid]["win"].addstr(wins[winid]["values"],1,readout[0])
+                wins[winid]["win"].addstr(0,2,readout["label"])
+                wins[winid]["win"].addstr(wins[winid]["values"],1,readout["value"]+readout["unit"])
             
 
         for index in wins:

@@ -19,11 +19,17 @@ signal.signal(signal.SIGINT, signal_handler)
 
 print("import test")
 
-gui.addReadout("12V","Voltage","PSU")
-gui.addReadout("2mA","Current","PSU")
-gui.addReadout("240uA","Current","DMM")
+psu_v=12
+psu_i=2
+dmm_i=240
+
+gui.addReadout(psu_v,"Voltage","V","PSU")
+gui.addReadout(psu_i,"Current","mA","PSU")
+dmm_i_id=gui.addReadout(dmm_i,"Current","uA","DMM")
 
 while(True):
     gui.update()
     time.sleep(5)
+    dmm_i+=5
+    gui.updateReadout(dmm_i_id,dmm_i)
 
