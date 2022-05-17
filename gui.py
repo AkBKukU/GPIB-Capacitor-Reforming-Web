@@ -3,6 +3,7 @@
 import sys,os
 import curses
 import time
+import datetime
 import csv
 from collections import deque
 
@@ -12,7 +13,8 @@ class GUI:
     def __init__(self):
         self.s=curses.initscr()
         curses.start_color()
-        curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
+        curses.use_default_colors()
+        curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_WHITE)
         self.readouts=[]
         self.logtables=[]
         self.readWid = 30
@@ -26,6 +28,7 @@ class GUI:
         self.readouts[index]["value"]=str(value)
 
     def addLogTable(self,headers,filepath,lines=None):
+        headers.insert(0,"time                    ")
         self.logtables.append({"headers":headers,"lines":lines,"filepath":filepath})
 
         with open(filepath,"w") as f:
@@ -35,6 +38,7 @@ class GUI:
         return len(self.logtables)-1
 
     def updateLogTable(self,index,data):
+        data.insert(0,str(datetime.datetime.now()))
         with open(self.logtables[index]["filepath"],"a") as f:
             wr = csv.writer(f, quoting=csv.QUOTE_ALL)
             wr.writerow(data)
@@ -56,8 +60,8 @@ class GUI:
         self.s.clear()
         self.s.refresh()
         height, width = self.s.getmaxyx() # get the window size
-        self.s.addstr(0, 0, " " * width, curses.color_pair(1))
-        self.s.addstr(0, 0, "Capacitor Reforming GP-IB Automation", curses.color_pair(1))
+        self.s.addstr(0, 0, " " * width, curses.color_pair(2))
+        self.s.addstr(0, 0, "Capacitor Reforming GP-IB Automation", curses.color_pair(2))
 
         wins={}
         for index , readout in enumerate(self.readouts):
@@ -119,7 +123,7 @@ class GUI:
             wins[i]["win"].addstr(0,2,logtable["filepath"])
             
             for hindex , header in enumerate(logtable["headers"]):
-                wins[i]["win"].addstr(ty,tx,header,curses.color_pair(1))
+                wins[i]["win"].addstr(ty,tx,header,curses.color_pair(2))
                 wins[i]["win"].addstr(ty,tx+len(header),"|")
                 tx+=len(header)+1
 
