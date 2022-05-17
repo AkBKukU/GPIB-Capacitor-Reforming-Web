@@ -4,7 +4,7 @@ import Gpib
 import sys
 import time
 
-class PSU6632A:
+class PSU6633A:
 
     def __init__(self,gpib_address,gpib_interface=0):
         device = Gpib.Gpib(gpib_interface_id,gpib_address)
