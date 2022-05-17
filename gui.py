@@ -19,6 +19,7 @@ class GUI:
         self.readouts.append([value,label,group])
 
     def update(self):
+        self.readX = 0
         self.s.clear()
         self.s.refresh()
         height, width = self.s.getmaxyx() # get the window size
