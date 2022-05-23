@@ -44,4 +44,7 @@ class DMM34401A:
         self.device.write("READ?")
         return float(self.device.read(100))
 
+    def beep(self):
+        self.device.write("SYST:BEEP")
+
 

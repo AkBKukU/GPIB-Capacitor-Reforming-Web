@@ -55,7 +55,7 @@ d["psu"]["v"]=0
 d["psu"]["i"]=0
 d["dmm"]["i"]=0
 d["calc"]["v"] = 0
-d["calc"]["v_max"] = 45
+d["calc"]["v_max"] = 16
 d["r_limit"]["r"]=220
 d["cap"]["i_max"]=2000 # Calculate next jump to 2mA
 d["cap"]["i_min"]=150 # Calculate next jump to 2mA
@@ -70,6 +70,7 @@ d["psu"]["i_id"]=gui.addReadout(psu_i,"Current","mA","PSU")
 d["calc"]["v_id"]=gui.addReadout(dmm_i,"Target Voltage","V","Controls")
 d["calc"]["v_max_id"]=gui.addReadout(dmm_i,"Max Voltage","V","Controls")
 d["cap"]["i_max_id"]=gui.addReadout(dmm_i,"Max Current","uA","Controls")
+d["cap"]["i_min_id"]=gui.addReadout(dmm_i,"Min Current","uA","Controls")
 
 d["dmm"]["v_id"]=gui.addReadout(dmm_i,"Current","uA","DMM")
 
@@ -78,7 +79,7 @@ d["cap"]["r_id"]=gui.addReadout(dmm_i,"Resistance","Ohms","Capacitor")
 
 
 t = time.localtime()
-log_i=gui.addLogTable(["PSU Voltage","PSU Current","Target Voltage","DMM Current","Cap Voltage", "Cap Resistance"],time.strftime('%Y-%m-%d_%H-%M-%S', t)+"-CompuProDisk1-c1-003.csv")
+log_i=gui.addLogTable(["PSU Voltage","PSU Current","Target Voltage","DMM Current","Cap Voltage", "Cap Resistance"],time.strftime('%Y-%m-%d_%H-%M-%S', t)+"-CompuProDisk1-c3-001.csv")
 
 settle=10
 while(d["psu"]["v"] < d["calc"]["v_max"]):
@@ -110,6 +111,7 @@ while(d["psu"]["v"] < d["calc"]["v_max"]):
     gui.updateReadout(d["calc"]["v_id"],d["calc"]["v"])
     gui.updateReadout(d["calc"]["v_max_id"],d["calc"]["v_max"])
     gui.updateReadout(d["cap"]["i_max_id"],d["cap"]["i_max"])
+    gui.updateReadout(d["cap"]["i_min_id"],d["cap"]["i_min"])
     gui.updateReadout(d["calc"]["v_id"],d["calc"]["v"])
     gui.updateReadout(d["dmm"]["v_id"],d["dmm"]["i"])
     gui.updateReadout(d["cap"]["v_id"],d["cap"]["v"])
@@ -127,3 +129,5 @@ while(d["psu"]["v"] < d["calc"]["v_max"]):
 
 psu.setCurrent(0)
 psu.setVolt(0)
+dmm.beep()
+
