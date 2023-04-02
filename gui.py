@@ -201,3 +201,4 @@ class GUI:
     def end(self):
         curses.endwin() # restore the terminal settings back to the original
 
+

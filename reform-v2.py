@@ -9,6 +9,7 @@ import csv
 import json
 
 from flask import Flask
+from flask import request
 
 from multiprocessing import Process, Manager, Value, Array
 
@@ -159,6 +160,7 @@ def reform(di):
 
             psu.setCurrent(0)
             psu.setVolt(0)
+            gui.end()
             dmm.beep()
             control_reform.value = 0
 
@@ -193,10 +195,24 @@ with Manager() as manager:
 
     @app.route("/data.json")
     def data_json():
+        time_get = str(request.args.get("time"))
         print("Opening CSV File: "+str(d["web_csv"]))
+        print("GET time: "+str(time_get))
         with open(str(d["web_csv"])) as csvfile:
             data = csv.DictReader(csvfile, delimiter=',')
-            return list(data)
+            data = list(data)
+            data_new=[]
+            new_point = None
+            for i,row in enumerate(data):
+                if row["time                    "] == time_get:
+                    new_point = i
+                if new_point is not None and new_point < i:
+                    data_new.append(row)
+
+            if time_get == "None":
+                return list(data)
+            else:
+                return list(data_new)
 
 
     @app.after_request
