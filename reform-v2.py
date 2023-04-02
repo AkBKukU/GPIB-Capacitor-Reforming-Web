@@ -5,28 +5,30 @@ import signal
 import time
 import random
 from ctypes import *
+import csv
+import json
 
 from flask import Flask
 
-from multiprocessing import Process, Value, Array
+from multiprocessing import Process, Manager, Value, Array
 
 
 from dmm import DMM34401A
 from psu import PSU6633A
 from gui import GUI
 
+
 # Web landing page configurable values
 web_cap_voltage = Value('d', 0.0)
 web_resistor = Value('d', 220.0)
 web_current_max = Value('d', 2000.0)
 web_current_min = Value('d', 150.0)
-web_log_name = Value(c_wchar_p,"Reform Log")
 control_reform = Value('d', 0.0)
 control_active = Value('d', 1)
 
 
 
-def reform():
+def reform(di):
     while(control_active.value):
         time.sleep(0.5)
         print("acvtive")
@@ -106,7 +108,8 @@ def reform():
 
 
             t = time.localtime()
-            log_i=gui.addLogTable(["PSU Voltage","PSU Current","Target Voltage","DMM Current","Cap Voltage", "Cap Resistance"],time.strftime('%Y-%m-%d_%H-%M-%S', t)+"_"+str(web_log_name.value)+".csv")
+            di["web_csv"] = str(time.strftime('%Y-%m-%d_%H-%M-%S', t)+"_"+str(di["log_name"])+".csv")
+            log_i=gui.addLogTable(["PSU Voltage","PSU Current","Target Voltage","DMM Current","Cap Voltage", "Cap Resistance"],di["web_csv"])
 
             settle=10
             while(d["psu"]["v"] < d["calc"]["v_max"]):
@@ -161,44 +164,57 @@ def reform():
 
 
 
+with Manager() as manager:
+    d = manager.dict()
+    d["web_csv"] = "log.csv"
+    d["log_name"] = "Reform Log"
 
-procs = []
-proc = Process(target=reform)  # instantiating without any argument
-procs.append(proc)
+    procs = []
+    proc = Process(target=reform, args=(d,))  # instantiating without any argument
+    procs.append(proc)
 
-proc.start()
+    proc.start()
 
-app = Flask("The Reform Script")
+    app = Flask("The Reform Script")
 
-@app.route("/")
-def start_reform():
+    @app.route("/")
+    def start_reform():
+    #web_csv.value = None
 
-    control_reform.value = 1
-    return " <p>Reform started</p>"
+        control_reform.value = 1
+        return " <p>Reform started</p>"
 
-@app.route("/kill")
-def kill():
+    @app.route("/kill")
+    def kill():
+
+        control_active.value = 0
+        control_reform.value = 0
+        return " <p>killing process</p>"
+
+    @app.route("/data.json")
+    def data_json():
+        print("Opening CSV File: "+str(d["web_csv"]))
+        with open(str(d["web_csv"])) as csvfile:
+            data = csv.DictReader(csvfile, delimiter=',')
+            return list(data)
+
+
+    @app.after_request
+    def add_header(r):
+        """
+        Add headers to both force latest IE rendering engine or Chrome Frame,
+        and also to cache the rendered page for 10 minutes.
+        """
+        r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        r.headers["Pragma"] = "no-cache"
+        r.headers["Expires"] = "0"
+        r.headers['Cache-Control'] = 'public, max-age=0'
+        return r
+
+
+    app.run(host="0.0.0.0")
 
     control_active.value = 0
-    control_reform.value = 0
-    return " <p>killing process</p>"
 
-@app.after_request
-def add_header(r):
-    """
-    Add headers to both force latest IE rendering engine or Chrome Frame,
-    and also to cache the rendered page for 10 minutes.
-    """
-    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    r.headers["Pragma"] = "no-cache"
-    r.headers["Expires"] = "0"
-    r.headers['Cache-Control'] = 'public, max-age=0'
-    return r
-
-
-app.run(host="0.0.0.0")
-
-control_active.value = 0
-
-for proc in procs:
-    proc.join()
+    for proc in procs:
+        proc.join()

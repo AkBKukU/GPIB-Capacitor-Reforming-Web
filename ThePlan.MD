@@ -9,6 +9,7 @@ When the script page is first loaded present the following input options to the 
  - Maximum Reforming Current
  - Minimum Reforming Current for next target Voltage
  - Cycles (number of times to run full reform)
+ - Log file name
 
 ## Data API
 
