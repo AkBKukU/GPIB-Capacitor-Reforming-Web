@@ -1,0 +1,18 @@
+.input-block {
+    display: inline-block;
+    background: rgba(0,0,0,0.75);
+    padding: 0.5em;
+    border-left: 0.75em solid red;
+    margin: 0.5em;
+
+    color: #FFFFFF;
+    font-family: sans-serif;
+}
+
+.input-block > label {
+    display: block;
+}
+
+.input-block > span.unit {
+    user-select: none;
+}

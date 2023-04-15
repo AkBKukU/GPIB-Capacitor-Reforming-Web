@@ -10,6 +10,8 @@ import json
 
 from flask import Flask
 from flask import request
+from flask import send_file
+from flask import redirect
 
 from multiprocessing import Process, Manager, Value, Array
 
@@ -81,11 +83,10 @@ def reform(di):
             d["dmm"]["i"]=0
             d["calc"]["v"] = 0
 
-
-            d["calc"]["v_max"] = 16
-            d["r_limit"]["r"]=220
-            d["cap"]["i_max"]=2000 # Calculate next jump to 2mA
-            d["cap"]["i_min"]=150 # Calculate next jump to 2mA
+            d["calc"]["v_max"] = float(di["set_volts"])
+            d["r_limit"]["r"] = float(di["set_res"])
+            d["cap"]["i_max"] = float(di["set_imax"]) # Calculate next jump to 2mA
+            d["cap"]["i_min"] = float(di["set_imin"]) # Calculate next jump to 2mA
 
 
             # Garbage UI init data
@@ -170,6 +171,10 @@ with Manager() as manager:
     d = manager.dict()
     d["web_csv"] = "log.csv"
     d["log_name"] = "Reform Log"
+    d["set_volts"] = "20"
+    d["set_res"] = "220"
+    d["set_imin"] = "150"
+    d["set_imax"] = "2000"
 
     procs = []
     proc = Process(target=reform, args=(d,))  # instantiating without any argument
@@ -185,6 +190,21 @@ with Manager() as manager:
 
         control_reform.value = 1
         return " <p>Reform started</p>"
+
+    @app.route("/setup",methods=["GET","POST"])
+    def web_setup():
+        if request.method == 'POST':
+            print("resitance: "+str(request.form.get("resistor")))
+            d["set_volts"] = float(request.form.get("voltage"))
+            d["set_res"] = float(request.form.get("resistor"))
+            d["set_imin"] = float(request.form.get("imin"))
+            d["set_imax"] = float(request.form.get("imax"))
+            # TODO - Check values to prevent fire
+            control_reform.value = 1
+            return redirect("/")
+
+
+        return send_file("static/html/setup.html")
 
     @app.route("/kill")
     def kill():
