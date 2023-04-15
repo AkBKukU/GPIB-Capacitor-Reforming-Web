@@ -188,20 +188,25 @@ with Manager() as manager:
     def start_reform():
     #web_csv.value = None
 
-        control_reform.value = 1
+        #control_reform.value = 1
         return " <p>Reform started</p>"
+
+    @app.route("/view")
+    def web_view():
+        print("Viewing data")
+
+        return send_file("static/html/view.html")
 
     @app.route("/setup",methods=["GET","POST"])
     def web_setup():
         if request.method == 'POST':
-            print("resitance: "+str(request.form.get("resistor")))
             d["set_volts"] = float(request.form.get("voltage"))
             d["set_res"] = float(request.form.get("resistor"))
             d["set_imin"] = float(request.form.get("imin"))
             d["set_imax"] = float(request.form.get("imax"))
             # TODO - Check values to prevent fire
             control_reform.value = 1
-            return redirect("/")
+            return redirect("/view")
 
 
         return send_file("static/html/setup.html")
@@ -228,7 +233,8 @@ with Manager() as manager:
                     new_point = i
                 if new_point is not None and new_point < i:
                     data_new.append(row)
-
+            # Convert ISO8601 to Unix for uPlot
+            #datetime.datetime.fromisoformat('2023-04-15 22:00:12.0004'.split(".")[0]).strftime('%s')
             if time_get == "None":
                 return list(data)
             else:
