@@ -8,6 +8,12 @@
     color: #FFFFFF;
     font-family: sans-serif;
 }
+.input-block > header > p {
+    display: block;
+    margin: 0em 0em;
+    border-bottom: 0.1em solid #BBBBBB;
+}
+
 
 .input-block > label {
     display: block;

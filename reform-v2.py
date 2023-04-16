@@ -4,6 +4,7 @@ import sys, os, fnmatch, shutil
 import signal
 import time
 import random
+import datetime
 from ctypes import *
 import csv
 import json
@@ -19,7 +20,7 @@ from multiprocessing import Process, Manager, Value, Array
 from dmm import DMM34401A
 from psu import PSU6633A
 from gui import GUI
-
+time_key = "time                    "
 
 # Web landing page configurable values
 web_cap_voltage = Value('d', 0.0)
@@ -136,7 +137,7 @@ def reform(di):
 
 
                 gui.update()
-                time.sleep(0.1)
+                #time.sleep(0.1)
                 dmm_i+=5
                 gui.updateReadout(d["psu"]["v_id"],d["psu"]["v"])
                 gui.updateReadout(d["psu"]["i_id"],d["psu"]["i"])
@@ -226,16 +227,19 @@ with Manager() as manager:
         with open(str(d["web_csv"])) as csvfile:
             data = csv.DictReader(csvfile, delimiter=',')
             data = list(data)
+            #data = (k.strip(), v.strip()) for k,v in data.items()
             data_new=[]
-            new_point = None
+            new_point = -1
             for i,row in enumerate(data):
-                if row["time                    "] == time_get:
+                row[time_key] = datetime.datetime.strptime(row[time_key], '%Y-%m-%d %H:%M:%S.%f').strftime('%s.%f')
+
+                if row[time_key] == time_get:
                     new_point = i
-                if new_point is not None and new_point < i:
+                if new_point > -1 and new_point < i:
                     data_new.append(row)
             # Convert ISO8601 to Unix for uPlot
             #datetime.datetime.fromisoformat('2023-04-15 22:00:12.0004'.split(".")[0]).strftime('%s')
-            if time_get == "None":
+            if time_get == "None" or time_get == "0":
                 return list(data)
             else:
                 return list(data_new)

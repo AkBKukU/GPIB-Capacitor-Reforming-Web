@@ -2,8 +2,11 @@
 
 <html>
     <head>
+        <link rel="stylesheet" href="static/dist/uPlot.min.css">
+        <script src="static/dist/uPlot.iife.js"></script>
+
         <link rel="stylesheet" href="/static/css/base.css" />
-        <script src="/static/js/view.js"></script>
+
     </head>
 
 
@@ -13,23 +16,45 @@
 
     <body>
         <div class="input-block">
-            <span> Target Voltage: </span>
-            <span id="voltage"> volts </span>
+            <header>
+                <p> PSU </p>
+            </header>
+
+            <span id="psu-voltage"> volts </span>
             <span class="unit">V</span>
+            <br/>
+
+            <span id="psu-current"> current </span>
+            <span class="unit">mA</span>
+
         </div>
 
         <div class="input-block">
-            <span> Cap Voltage: </span>
+            <header>
+                <p> Capacitor </p>
+            </header>
+
             <span id="cap-voltage"> volts </span>
             <span class="unit">V</span>
             <br/>
 
-            <span> Cap Current: </span>
             <span id="cap-current"> current </span>
             <span class="unit">&mu;A</span>
         </div>
 
+        <div class="input-block">
+            <header>
+                <p> Target Voltage </p>
+            </header>
+            <span id="voltage"> volts </span>
+            <span class="unit">V</span>
+        </div>
+
+        <br/>
+        <div id="plot"></div>
+
     </body>
 
+        <script src="/static/js/view.js"></script>
 
 </html>
