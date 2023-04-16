@@ -1,6 +1,6 @@
 # The Plan**™**
 
-## Control Landing Page
+## Control Landing Page - **PARTIALLY DONE**
 
 When the script page is first loaded present the following input options to the user to control the process of reforming
 
@@ -11,7 +11,7 @@ When the script page is first loaded present the following input options to the 
  - Cycles (number of times to run full reform)
  - Log file name
 
-## Data API
+## Data API - **DONE**
 
 Use GET request from javascript client when accessing current data to provide timestamp of newest data that client has to know what new data created after timestamp to provide.
 
@@ -21,23 +21,30 @@ Realtime views in dedicated widgets for:
 
  - All configured values from landing page
  - Measured Voltage
- - Target Voltage
- - Measured Current
+ - Target Voltage - **DONE**
+ - Measured Current - **DONE**
 
-Chart Following Values using https://leeoniya.github.io/uPlot/:
+Chart Following Values using https://leeoniya.github.io/uPlot/:  - **STARTED**
 
 Voltage Chart:
  - Maximum Capacitor Voltage
- - Target Voltage
- - Measured Voltage
+ - Target Voltage - **DONE**
+ - Measured Voltage - **DONE**
 
-Current Chart:
+Voltage Chart Moving Window:
+ - Same as previous voltage chart with limited data window for better views
+ - Using `<input type=number>` to change data window size
+
+Current Chart Moving Window:
  - Maximum Current
  - Measured Current
  - Minimum Current
+ - Use same `<input type=number>` as voltage to change data window size
 
 ## Replay
 
 Do not access GP-IB devices
 
 Load existing CSV of data, generate new CSV in real, or accelerated, time using timestamps from previous CSV. Render web page to review data.
+
+Setup page could have alternate menu for choosing from exiting files to both replay and download
