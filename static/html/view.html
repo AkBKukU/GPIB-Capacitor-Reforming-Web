@@ -3,7 +3,7 @@
 <html>
     <head>
         <link rel="stylesheet" href="static/dist/uPlot.min.css">
-        <script src="static/dist/uPlot.iife.js"></script>
+        <script src="static/dist/uPlot.iife.min.js"></script>
 
         <link rel="stylesheet" href="/static/css/base.css" />
 
@@ -50,7 +50,31 @@
             <span class="unit">V</span>
         </div>
 
+        <div class="input-block">
+            <header>
+                <p> Max Voltage </p>
+            </header>
+            <span id="voltage-max"> volts </span>
+            <span class="unit">V</span>
+        </div>
+
+        <div class="input-block">
+            <header>
+                <p> Current Limits </p>
+            </header>
+            <span> Min: </span>
+            <span id="imin"> volts </span>
+            <span class="unit">&mu;A</span>
+            <br/>
+
+            <span> Max: </span>
+            <span id="imax"> current </span>
+            <span class="unit">&mu;A</span>
+
+        </div>
+
         <a class="link-block" href="/kill" style="float:right;">Kill Reform</a>
+        <a class="link-block" href="/setup" style="float:right;">Setup</a>
 
         <br/>
         <div id="plot"></div>

@@ -2,8 +2,13 @@ let last_data=0
 let data_count=0
 let plotted=0
 let uplot = undefined;
+var imin = 150;
+var imin = 2000;
+let startup_time = "something";
 
 var data = [[],[],[],];
+
+var data_window = [[],[],[],];
 
 function data_print(datad)
 {
@@ -32,12 +37,15 @@ function json_read(farts)
       data[0].push(value["time                    "]);
       data[1].push(value["Target Voltage"]);
       data[2].push(value["Cap Voltage"]);
+      data_window[0].push(value["time                    "]);
+      data_window[1].push(value["Target Voltage"]);
+      data_window[2].push(value["Cap Voltage"]);
 
       if (data_count > 100)
       {
-        data[0].shift();
-        data[1].shift();
-        data[2].shift();
+        data_window[0].shift();
+        data_window[1].shift();
+        data_window[2].shift();
       }
       console.log(data)
     });
@@ -65,7 +73,45 @@ function data_fetch()
 
 setInterval(data_fetch,1000)
 
-startup_time="something"
+
+function control_read(control_json)
+{
+    //console.log(farts)
+    if(control_json.length ==0)
+    {
+      return
+    }
+
+    if (startup_time == "something")
+    {
+        if (data[0][0] != undefined) {
+            startup_time = data[0][0];
+        }
+     }else if(startup_time != control_json["start_time"])
+     {
+       //console.log('Insert reload here st['+startup_time+']')
+       window.location.reload()
+     }
+     document.getElementById("voltage-max").textContent = Math.round(control_json["voltage"]*100)/100;
+     document.getElementById("imin").textContent = Math.round(control_json["imin"]*100)/100;
+     document.getElementById("imax").textContent = Math.round(control_json["imax"]*100)/100;
+
+    //console.log(control_json)
+}
+
+function control_fetch()
+{
+  fetch('/control.json')
+    .then((response) => response.json())
+    .then((control) => control_read(control));
+}
+
+setInterval(control_fetch,1000)
+
+
+
+
+
 
 let opts = {
   title: "My Chart",
@@ -79,7 +125,7 @@ let opts = {
       // initial toggled state (optional)
       show: true,
 
-      spanGaps: false,
+      spanGaps: true,
 
       // in-legend display
       label: "Target Voltage",

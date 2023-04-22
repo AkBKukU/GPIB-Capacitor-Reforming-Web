@@ -21,6 +21,7 @@ from dmm import DMM34401A
 from psu import PSU6633A
 from gui import GUI
 time_key = "time                    "
+control = {}
 
 # Web landing page configurable values
 web_cap_voltage = Value('d', 0.0)
@@ -176,6 +177,12 @@ with Manager() as manager:
     d["set_res"] = "220"
     d["set_imin"] = "150"
     d["set_imax"] = "2000"
+    control["start_time"] = 0
+    control["active"] = 0
+    control["voltage"] = 0
+    control["resistance"] = 0
+    control["imin"] = 0
+    control["imax"] = 0
 
     procs = []
     proc = Process(target=reform, args=(d,))  # instantiating without any argument
@@ -205,10 +212,28 @@ with Manager() as manager:
     @app.route("/setup",methods=["GET","POST"])
     def web_setup():
         if request.method == 'POST':
-            d["set_volts"] = float(request.form.get("voltage"))
-            d["set_res"] = float(request.form.get("resistor"))
-            d["set_imin"] = float(request.form.get("imin"))
-            d["set_imax"] = float(request.form.get("imax"))
+            try:
+                d["set_volts"] = float(request.form.get("voltage"))
+                control["voltage"] = d["set_volts"]
+            except:
+                return redirect("/setup?error=voltage")
+
+            try:
+                d["set_res"] = float(request.form.get("resistor"))
+                control["resistance"] = d["set_res"]
+            except:
+                return redirect("/setup?error=resistor")
+            try:
+                d["set_imin"] = float(request.form.get("imin"))
+                control["imin"] = d["set_imin"]
+            except:
+                return redirect("/setup?error=imin")
+            try:
+                d["set_imax"] = float(request.form.get("imax"))
+                control["imax"] = d["set_imax"]
+            except:
+                return redirect("/setup?error=imax")
+
             # TODO - Check values to prevent fire
             control_reform.value = 1
             return redirect("/view")
@@ -220,6 +245,11 @@ with Manager() as manager:
 
         control_reform.value = 0
         return send_file("static/html/kill.html")
+
+    @app.route("/control.json")
+    def control_json():
+        control["active"] = control_reform.value
+        return control
 
     @app.route("/data.json")
     def data_json():
@@ -234,6 +264,8 @@ with Manager() as manager:
             new_point = -1
             for i,row in enumerate(data):
                 row[time_key] = datetime.datetime.strptime(row[time_key], '%Y-%m-%d %H:%M:%S.%f').strftime('%s.%f')
+                if (i == 0):
+                    control["start_time"] = row[time_key]
 
                 if row[time_key] == time_get:
                     new_point = i

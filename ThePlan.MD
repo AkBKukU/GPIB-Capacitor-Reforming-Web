@@ -47,4 +47,6 @@ Do not access GP-IB devices
 
 Load existing CSV of data, generate new CSV in real, or accelerated, time using timestamps from previous CSV. Render web page to review data.
 
+Have speed control as option when picking CSV to replay. speed control is number of lines to present with each new update request. fewer lines will be sub-realtime, more lines will be accelerated.
+
 Setup page could have alternate menu for choosing from exiting files to both replay and download

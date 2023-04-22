@@ -3,6 +3,14 @@
 <html>
     <head>
         <link rel="stylesheet" href="/static/css/base.css" />
+        <script type="text/javascript">
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            if (urlParams.get('error') == "voltage")
+            {
+                alert("Please enter a valid voltage");
+            }
+        </script>
     </head>
     <header>
         <h1> Reform Setup </h1>
