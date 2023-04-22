@@ -41,3 +41,13 @@
 .link-block:hover {
     background: rgba(155,0,0,0.75);
 }
+#voltage_full {
+    display: inline-block;
+
+}
+
+#side {
+    display: inline-block;
+
+
+}

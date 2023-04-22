@@ -1,7 +1,9 @@
-let last_data=0
-let data_count=0
-let plotted=0
+let last_data=0;
+var data_count=0;
+let plotted_full=0;
+let plotted_window=0;
 let uplot = undefined;
+let uplot_window = undefined;
 var imin = 150;
 var imin = 2000;
 let startup_time = "something";
@@ -9,6 +11,9 @@ let startup_time = "something";
 var data = [[],[],[],];
 
 var data_window = [[],[],[],];
+
+let size = document.getElementById("plot").getBoundingClientRect()
+let big_width = size.width;
 
 function data_print(datad)
 {
@@ -37,23 +42,34 @@ function json_read(farts)
       data[0].push(value["time                    "]);
       data[1].push(value["Target Voltage"]);
       data[2].push(value["Cap Voltage"]);
-      data_window[0].push(value["time                    "]);
-      data_window[1].push(value["Target Voltage"]);
-      data_window[2].push(value["Cap Voltage"]);
-
-      if (data_count > 100)
-      {
-        data_window[0].shift();
-        data_window[1].shift();
-        data_window[2].shift();
-      }
-      console.log(data)
     });
 
-    if ((data_count > 1) && (plotted==0))
+    window_size = 25;
+    data_window = [[],[],[],];
+    if(data_count > window_size){
+      console.log("Enough data")
+      for (let step = 0; step < window_size; step++)
+      {
+        data_window[0].push(data[0][data[0].length-window_size+step]);
+        data_window[1].push(data[1][data[1].length-window_size+step]);
+        data_window[2].push(data[2][data[2].length-window_size+step]);
+      }
+      if (plotted_window==0)
+      {
+      console.log("Enough data")
+          plotted_window=1;
+          uplot_window = new uPlot(opts_window, data_window, document.getElementById("voltage_window"));
+      }else{
+        uplot_window.setData(data_window);
+      }
+    }else{
+      console.log("Not Enough data: "+data_count )
+    }
+
+    if ((data_count > 1) && (plotted_full==0))
     {
-        plotted=1;
-        uplot = new uPlot(opts, data, document.body);
+        plotted_full=1;
+        uplot = new uPlot(opts_full, data, document.getElementById("voltage_full"));
     }
 
     if (data_count > 1)
@@ -113,12 +129,56 @@ setInterval(control_fetch,1000)
 
 
 
-let opts = {
-  title: "My Chart",
-  id: "plot",
+let opts_full = {
+  title: "Full Test Data",
+  //id: "voltage_full",
   class: "my-chart",
-  width: 1200,
+  width: big_width*0.66,
   height: 600,
+  series: [
+    {},
+    {
+      // initial toggled state (optional)
+      show: true,
+
+      spanGaps: true,
+
+      // in-legend display
+      label: "Target Voltage",
+      value: (u, v) => v == null ? null : v + " V",
+
+      // series style
+      stroke: "red",
+      width: 3,
+      fill: "rgba(255, 0, 0, 0)",
+      dash: [0, 0],
+    },
+    {
+      // initial toggled state (optional)
+      show: true,
+
+      spanGaps: false,
+
+      // in-legend display
+      label: "Cap Voltage",
+      value: (u, v) => v == null ? null : v + " V",
+
+      // series style
+      stroke: "blue",
+      width: 3,
+      fill: "rgba(0, 0, 0, 0)",
+      dash: [0, 0],
+    }
+  ],
+};
+
+
+let opts_window = {
+  title: "Window of Test Data",
+  //id: "voltage_window",
+  class: "my-chart",
+  width: big_width*0.3,
+  height: 300,
   series: [
     {},
     {
