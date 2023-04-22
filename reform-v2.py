@@ -115,7 +115,7 @@ def reform(di):
             log_i=gui.addLogTable(["PSU Voltage","PSU Current","Target Voltage","DMM Current","Cap Voltage", "Cap Resistance"],di["web_csv"])
 
             settle=10
-            while(d["psu"]["v"] < d["calc"]["v_max"]):
+            while(d["psu"]["v"] < d["calc"]["v_max"] and control_reform.value):
 
                 # Get new instrument readings
                 d["psu"]["v"]=getPSUVolts()
@@ -190,7 +190,11 @@ with Manager() as manager:
     #web_csv.value = None
 
         #control_reform.value = 1
-        return " <p>Reform started</p>"
+
+        if control_reform.value:
+            return redirect("/view")
+        else:
+            return redirect("/setup")
 
     @app.route("/view")
     def web_view():
@@ -209,15 +213,13 @@ with Manager() as manager:
             control_reform.value = 1
             return redirect("/view")
 
-
         return send_file("static/html/setup.html")
 
     @app.route("/kill")
     def kill():
 
-        control_active.value = 0
         control_reform.value = 0
-        return " <p>killing process</p>"
+        return send_file("static/html/kill.html")
 
     @app.route("/data.json")
     def data_json():

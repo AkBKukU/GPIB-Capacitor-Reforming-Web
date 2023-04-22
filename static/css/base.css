@@ -8,6 +8,7 @@
     color: #FFFFFF;
     font-family: sans-serif;
 }
+
 .input-block > header > p {
     display: block;
     margin: 0em 0em;
@@ -21,4 +22,22 @@
 
 .input-block > span.unit {
     user-select: none;
+}
+
+.link-block {
+    display: inline-block;
+    background: rgba(0,0,0,0.75);
+    padding: 0.5em;
+    margin: 0.5em;
+
+    color: #FFFFFF;
+    font-family: sans-serif;
+    text-decoration: none;
+
+    transition: background-color 0.5s;
+}
+
+
+.link-block:hover {
+    background: rgba(155,0,0,0.75);
 }
