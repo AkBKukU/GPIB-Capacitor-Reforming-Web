@@ -4,20 +4,23 @@ let plotted_full=0;
 let plotted_window=0;
 let uplot = undefined;
 let uplot_window = undefined;
+let uplot_current = undefined;
 var imin = 150;
-var imin = 2000;
+var imax = 2000;
 let startup_time = "something";
+var window_size = 25;
 
-var data = [[],[],[],];
+var data = [[],[],[],[],];
 
 var data_window = [[],[],[],];
+var data_current = [[],[],[],[],];
 
 let size = document.getElementById("plot").getBoundingClientRect()
 let big_width = size.width;
 
 function data_print(datad)
 {
-  //document.getElementById("volt").textContent = datad.fetch;
+  //document.getElementById("volt").textContent = dat time: false,ad.fetch;
 }
 
 function json_read(farts)
@@ -42,25 +45,35 @@ function json_read(farts)
       data[0].push(value["time                    "]);
       data[1].push(value["Target Voltage"]);
       data[2].push(value["Cap Voltage"]);
+      data[3].push(value["DMM Current"]);
     });
 
-    window_size = 25;
     data_window = [[],[],[],];
+    data_current = [[],[],[],[],];
     if(data_count > window_size){
       console.log("Enough data")
       for (let step = 0; step < window_size; step++)
       {
+        // Voltage window
         data_window[0].push(data[0][data[0].length-window_size+step]);
         data_window[1].push(data[1][data[1].length-window_size+step]);
         data_window[2].push(data[2][data[2].length-window_size+step]);
+        // Current window
+        data_current[0].push(data[0][data[0].length-window_size+step]);
+        data_current[1].push(imin);
+        data_current[2].push(imax);
+        data_current[3].push(data[3][data[3].length-window_size+step]);
       }
       if (plotted_window==0)
       {
-      console.log("Enough data")
+      console.log("not plotted")
           plotted_window=1;
           uplot_window = new uPlot(opts_window, data_window, document.getElementById("voltage_window"));
+          uplot_current = new uPlot(opts_current, data_current, document.getElementById("current_window"));
       }else{
         uplot_window.setData(data_window);
+        uplot_current.setData(data_current);
+        console.log("update window")
       }
     }else{
       console.log("Not Enough data: "+data_count )
@@ -85,6 +98,9 @@ function data_fetch()
   fetch('/data.json?time='+last_data)
     .then((response) => response.json())
     .then((data) => json_read(data));
+
+  window_size = document.getElementById('window_values').value;
+      console.log(data_count)
 }
 
 setInterval(data_fetch,1000)
@@ -110,7 +126,9 @@ function control_read(control_json)
      }
      document.getElementById("voltage-max").textContent = Math.round(control_json["voltage"]*100)/100;
      document.getElementById("imin").textContent = Math.round(control_json["imin"]*100)/100;
+     imin = Math.round(control_json["imin"]*100)/100;
      document.getElementById("imax").textContent = Math.round(control_json["imax"]*100)/100;
+     imax = Math.round(control_json["imax"]*100)/100;
 
     //console.log(control_json)
 }
@@ -130,11 +148,11 @@ setInterval(control_fetch,1000)
 
 
 let opts_full = {
-  title: "Full Test Data",
+  title: "Full Test Data (Voltages)",
   //id: "voltage_full",
   class: "my-chart",
   width: big_width*0.66,
-  height: 600,
+  height: 700,
   series: [
     {},
     {
@@ -144,7 +162,7 @@ let opts_full = {
       spanGaps: true,
 
       // in-legend display
-      label: "Target Voltage",
+      label: "Target",
       value: (u, v) => v == null ? null : v + " V",
 
       // series style
@@ -160,7 +178,7 @@ let opts_full = {
       spanGaps: false,
 
       // in-legend display
-      label: "Cap Voltage",
+      label: "Cap",
       value: (u, v) => v == null ? null : v + " V",
 
       // series style
@@ -174,7 +192,7 @@ let opts_full = {
 
 
 let opts_window = {
-  title: "Window of Test Data",
+  title: "Window of Test Data (Voltages)",
   //id: "voltage_window",
   class: "my-chart",
   width: big_width*0.3,
@@ -188,7 +206,7 @@ let opts_window = {
       spanGaps: true,
 
       // in-legend display
-      label: "Target Voltage",
+      label: "Target",
       value: (u, v) => v == null ? null : v + " V",
 
       // series style
@@ -204,11 +222,71 @@ let opts_window = {
       spanGaps: false,
 
       // in-legend display
-      label: "Cap Voltage",
+      label: "Cap",
       value: (u, v) => v == null ? null : v + " V",
 
       // series style
       stroke: "blue",
+      width: 3,
+      fill: "rgba(0, 0, 0, 0)",
+      dash: [0, 0],
+    }
+  ],
+};
+
+
+let opts_current = {
+  title: "Window of Capacitor charge (Current)",
+  //id: "voltage_window",
+  class: "my-chart",
+  width: big_width*0.3,
+  height: 300,
+  series: [
+    {},
+    {
+      // initial toggled state (optional)
+      show: true,
+
+      spanGaps: true,
+
+      // in-legend display
+      label: "I-Min",
+      value: (u, v) => v == null ? null : v + " μA",
+
+      // series style
+      stroke: "red",
+      width: 3,
+      fill: "rgba(255, 0, 0, 0)",
+      dash: [0, 0],
+    },
+    {
+      // initial toggled state (optional)
+      show: true,
+
+      spanGaps: false,
+
+      // in-legend display
+      label: "I-Max",
+      value: (u, v) => v == null ? null : v + " μA",
+
+      // series style
+      stroke: "blue",
+      width: 3,
+      fill: "rgba(0, 0, 0, 0)",
+      dash: [0, 0],
+    },
+    {
+      // initial toggled state (optional)
+      show: true,
+
+      spanGaps: false,
+
+      // in-legend display
+      label: "I",
+      value: (u, v) => v == null ? null : v + " μA",
+
+      // series style
+      stroke: "green",
       width: 3,
       fill: "rgba(0, 0, 0, 0)",
       dash: [0, 0],

@@ -31,6 +31,8 @@ web_current_min = Value('d', 150.0)
 control_reform = Value('d', 0.0)
 control_active = Value('d', 1)
 
+log_directory="logs"
+
 
 
 def reform(di):
@@ -112,7 +114,7 @@ def reform(di):
 
 
             t = time.localtime()
-            di["web_csv"] = str(time.strftime('%Y-%m-%d_%H-%M-%S', t)+"_"+str(di["log_name"])+".csv")
+            di["web_csv"] = log_directory+"/"+str(time.strftime('%Y-%m-%d_%H-%M-%S', t)+"_"+str(di["log_name"])+".csv")
             log_i=gui.addLogTable(["PSU Voltage","PSU Current","Target Voltage","DMM Current","Cap Voltage", "Cap Resistance"],di["web_csv"])
 
             settle=10
@@ -233,6 +235,10 @@ with Manager() as manager:
                 control["imax"] = d["set_imax"]
             except:
                 return redirect("/setup?error=imax")
+            try:
+                d["log_name"] = request.form.get("log_name")
+            except:
+                return redirect("/setup?error=log_name")
 
             # TODO - Check values to prevent fire
             control_reform.value = 1

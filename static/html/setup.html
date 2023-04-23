@@ -10,6 +10,22 @@
             {
                 alert("Please enter a valid voltage");
             }
+            if (urlParams.get('error') == "resistor")
+            {
+                alert("Please enter a valid resistance");
+            }
+            if (urlParams.get('error') == "imin")
+            {
+                alert("Please enter a valid minimum current");
+            }
+            if (urlParams.get('error') == "imax")
+            {
+                alert("Please enter a valid maximum current");
+            }
+            if (urlParams.get('error') == "log_name")
+            {
+                alert("Please enter a valid log name");
+            }
         </script>
     </head>
     <header>
@@ -63,6 +79,12 @@
         <label for="imax"> Current Maximum </label>
         <input name="imax" type="number" value="2000">
         <span class="unit">&mu;A</span>
+    </div>
+
+    <div class="input-block">
+        <label for="log_name"> Log Name</label>
+        <input name="log_name" type="text" value="log">
+        <span class="unit">.CSV</span>
     </div>
 </fieldset>
     <div class="input-block">
