@@ -3,30 +3,6 @@
 <html>
     <head>
         <link rel="stylesheet" href="/static/css/base.css" />
-        <script type="text/javascript">
-            const queryString = window.location.search;
-            const urlParams = new URLSearchParams(queryString);
-            if (urlParams.get('error') == "voltage")
-            {
-                alert("Please enter a valid voltage");
-            }
-            if (urlParams.get('error') == "resistor")
-            {
-                alert("Please enter a valid resistance");
-            }
-            if (urlParams.get('error') == "imin")
-            {
-                alert("Please enter a valid minimum current");
-            }
-            if (urlParams.get('error') == "imax")
-            {
-                alert("Please enter a valid maximum current");
-            }
-            if (urlParams.get('error') == "log_name")
-            {
-                alert("Please enter a valid log name");
-            }
-        </script>
     </head>
     <header>
         <h1> Reform Setup </h1>
@@ -87,10 +63,19 @@
         <span class="unit">.CSV</span>
     </div>
 </fieldset>
-    <div class="input-block">
-        <input type="submit" value="Start Reforming..." />
 
-    </div>
+        <input  class="link-block" type="submit" value="Start Reforming..." />
 
-    <form>
+
+    </form>
+    <h2> Log Download</h2>
+
+    <select class="input-block" name="log_filename" id="log-select">
+        <option value="log.csv">log.csv</option>
+    </select>
+
+    <input type="button" class="link-block" id="log-download" href="log_download?log=log.csv" download="NotALog.csv" value="Download"  onClick="doDownload()" />
+
+    <script src="/static/js/setup.js"></script>
+
 </html>

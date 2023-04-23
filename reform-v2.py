@@ -8,11 +8,13 @@ import datetime
 from ctypes import *
 import csv
 import json
+import glob
 
 from flask import Flask
 from flask import request
 from flask import send_file
 from flask import redirect
+from flask import make_response
 
 from multiprocessing import Process, Manager, Value, Array
 
@@ -256,6 +258,28 @@ with Manager() as manager:
     def control_json():
         control["active"] = control_reform.value
         return control
+
+
+    @app.route("/logs.json")
+    def logs_json():
+        return list(map(lambda x: x.split('/',1)[1], glob.glob(log_directory+'/*.csv')))
+
+    @app.route("/logs_download")
+    def logs_download():
+        log_filename = 0
+        try:
+            log_filename = str(request.args.get("log_filename"))
+
+
+            r = make_response(open(str(log_directory+"/"+log_filename)).read())
+            r.headers['Content-type'] = "text/plain"
+            r.headers['Content-disposition'] = "attachment; filename=\"" +log_filename+ "\""
+
+            return r
+        except:
+            return redirect("/setup?error=log_name")
+
+        return "File's not here, man",401
 
     @app.route("/data.json")
     def data_json():

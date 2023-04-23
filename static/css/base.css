@@ -2,6 +2,7 @@
     display: inline-block;
     background: rgba(0,0,0,0.75);
     padding: 0.5em;
+    border: none;
     border-left: 0.75em solid red;
     margin: 0.5em;
 
@@ -29,6 +30,7 @@
     background: rgba(0,0,0,0.75);
     padding: 0.5em;
     margin: 0.5em;
+    border: none;
 
     color: #FFFFFF;
     font-family: sans-serif;
