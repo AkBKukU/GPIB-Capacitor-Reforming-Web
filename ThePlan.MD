@@ -1,6 +1,6 @@
-# The Plan**™**
+# The Plan**™** - **DONE**
 
-## Control Landing Page - **PARTIALLY DONE**
+## Control Landing Page - **DONE**
 
 When the script page is first loaded present the following input options to the user to control the process of reforming
 
@@ -8,7 +8,6 @@ When the script page is first loaded present the following input options to the 
  - Current Limiting Resistor Value
  - Maximum Reforming Current
  - Minimum Reforming Current for next target Voltage
- - Cycles (number of times to run full reform)
  - Log file name
 
 ## Data API - **DONE**
@@ -19,29 +18,27 @@ Use GET request from javascript client when accessing current data to provide ti
 
 Realtime views in dedicated widgets for: 
 
- - All configured values from landing page
- - Measured Voltage
+ - All configured values from landing page - **DONE**
  - Target Voltage - **DONE**
  - Measured Current - **DONE**
 
 Chart Following Values using https://leeoniya.github.io/uPlot/:  - **STARTED**
 
-Voltage Chart:
- - Maximum Capacitor Voltage
+Voltage Chart: - **DONE**
  - Target Voltage - **DONE**
  - Measured Voltage - **DONE**
 
-Voltage Chart Moving Window:
+Voltage Chart Moving Window: - **DONE**
  - Same as previous voltage chart with limited data window for better views
  - Using `<input type=number>` to change data window size
 
-Current Chart Moving Window:
+Current Chart Moving Window: - **DONE**
  - Maximum Current
  - Measured Current
  - Minimum Current
  - Use same `<input type=number>` as voltage to change data window size
 
-## Replay
+## Replay - **DONE**
 
 Do not access GP-IB devices
 
