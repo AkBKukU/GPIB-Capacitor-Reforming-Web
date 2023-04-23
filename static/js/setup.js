@@ -27,6 +27,13 @@ function doDownload() {
 }
 
 
+function doReplay() {
+    var file=document.getElementById("log-select");
+    var lines=document.getElementById("replay-speed").value;
+    document.location="/view?log_filename=" + file.value+"&lines="+lines;
+}
+
+
 
 function logs_read(logs_json)
 {

@@ -175,7 +175,7 @@ def reform(di):
 
 with Manager() as manager:
     d = manager.dict()
-    d["web_csv"] = "log.csv"
+    d["web_csv"] = "logs/log.csv"
     d["log_name"] = "Reform Log"
     d["set_volts"] = "20"
     d["set_res"] = "220"
@@ -187,6 +187,8 @@ with Manager() as manager:
     control["resistance"] = 0
     control["imin"] = 0
     control["imax"] = 0
+    line_send = 0
+    replay_file = None
 
     procs = []
     proc = Process(target=reform, args=(d,))  # instantiating without any argument
@@ -209,7 +211,20 @@ with Manager() as manager:
 
     @app.route("/view")
     def web_view():
+        global line_send
+        global replay_file
         print("Viewing data")
+        try:
+            line_send = int(request.args.get("lines"))
+        except:
+            line_send=0
+
+        try:
+            replay_file = request.args.get("log_filename")
+            print("Log file is: " + str(replay_file))
+        except:
+            return redirect("/setup?error=log_name")
+
 
         return send_file("static/html/view.html")
 
@@ -250,7 +265,11 @@ with Manager() as manager:
 
     @app.route("/kill")
     def kill():
+        global line_send
+        global replay_file
 
+        line_send = 0
+        replay_file = None
         control_reform.value = 0
         return send_file("static/html/kill.html")
 
@@ -262,7 +281,7 @@ with Manager() as manager:
 
     @app.route("/logs.json")
     def logs_json():
-        return list(map(lambda x: x.split('/',1)[1], glob.glob(log_directory+'/*.csv')))
+        return list(map(lambda x: x.split('/',1)[1], sorted(glob.glob(log_directory+'/*.csv'), reverse=True)))
 
     @app.route("/logs_download")
     def logs_download():
@@ -283,10 +302,19 @@ with Manager() as manager:
 
     @app.route("/data.json")
     def data_json():
+        global line_send
+        global replay_file
         time_get = str(request.args.get("time"))
         print("Opening CSV File: "+str(d["web_csv"]))
         print("GET time: "+str(time_get))
-        with open(str(d["web_csv"])) as csvfile:
+
+        if replay_file is None:
+            filename = d["web_csv"]
+        else:
+            filename = log_directory+"/"+replay_file
+
+        print("Log file is: " + str(filename))
+        with open(str(filename)) as csvfile:
             data = csv.DictReader(csvfile, delimiter=',')
             data = list(data)
             #data = (k.strip(), v.strip()) for k,v in data.items()
@@ -301,12 +329,13 @@ with Manager() as manager:
                     new_point = i
                 if new_point > -1 and new_point < i:
                     data_new.append(row)
+
             # Convert ISO8601 to Unix for uPlot
             #datetime.datetime.fromisoformat('2023-04-15 22:00:12.0004'.split(".")[0]).strftime('%s')
             if time_get == "None" or time_get == "0":
-                return list(data)
+                return list(data[:(line_send if line_send else -1)])
             else:
-                return list(data_new)
+                return list(data_new[:(line_send if line_send else -1)])
 
 
     @app.after_request

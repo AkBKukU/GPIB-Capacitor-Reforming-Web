@@ -68,13 +68,21 @@
 
 
     </form>
-    <h2> Log Download</h2>
+    <h2> Log Download &  Replay</h2>
 
     <select class="input-block" name="log_filename" id="log-select">
-        <option value="log.csv">log.csv</option>
     </select>
 
+
+    <div class="input-block">
+        <label for="replay-speed"> Replay Speed </label>
+        <input id="replay-speed" name="replay-speed" type="number" value="20">
+        <span class="unit">Lines</span>
+    </div>
+
+
     <input type="button" class="link-block" id="log-download" href="log_download?log=log.csv" download="NotALog.csv" value="Download"  onClick="doDownload()" />
+    <input type="button" class="link-block" id="log-replay" href="log_download?log=log.csv" download="NotALog.csv" value="Replay"  onClick="doReplay()" />
 
     <script src="/static/js/setup.js"></script>
 
