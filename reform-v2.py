@@ -40,7 +40,6 @@ log_directory="logs"
 def reform(di):
     while(control_active.value):
         time.sleep(0.5)
-        print("acvtive")
         while (control_reform.value):
             gui = GUI()
             psu = PSU6633A(12)
@@ -213,7 +212,6 @@ with Manager() as manager:
     def web_view():
         global line_send
         global replay_file
-        print("Viewing data")
         try:
             line_send = int(request.args.get("lines"))
         except:
@@ -221,7 +219,6 @@ with Manager() as manager:
 
         try:
             replay_file = request.args.get("log_filename")
-            print("Log file is: " + str(replay_file))
         except:
             return redirect("/setup?error=log_name")
 
@@ -305,15 +302,12 @@ with Manager() as manager:
         global line_send
         global replay_file
         time_get = str(request.args.get("time"))
-        print("Opening CSV File: "+str(d["web_csv"]))
-        print("GET time: "+str(time_get))
 
         if replay_file is None:
             filename = d["web_csv"]
         else:
             filename = log_directory+"/"+replay_file
 
-        print("Log file is: " + str(filename))
         with open(str(filename)) as csvfile:
             data = csv.DictReader(csvfile, delimiter=',')
             data = list(data)

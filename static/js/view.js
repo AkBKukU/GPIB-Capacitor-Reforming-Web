@@ -100,10 +100,12 @@ function data_fetch()
     .then((data) => json_read(data));
 
   window_size = document.getElementById('window_values').value;
-      console.log(data_count)
+
+
+  setTimeout(data_fetch,1000)
 }
 
-setInterval(data_fetch,1000)
+setTimeout(data_fetch,1000)
 
 
 function control_read(control_json)
