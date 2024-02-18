@@ -20,6 +20,13 @@ Controlling GP-IB test equipment to automate reforming capacitors with live data
 Capcitors need to be slowly brought up to their rated voltage at a limited current (10m max per [this guide](https://web.archive.org/web/20220514225249/https://www.hb9aik.ch/notes/MIL-HDBK-1131C.pdf)). The goal is to rebuild the oxide layer acting as a dialectric that forms on the aluminum foil. Too much current or too high a voltage on a weakened capacitor will short through the dialectric causing catastrophic failure. The amount of oxide is relative to the maximum voltage the capacitor can handle.
 
 ## Software Usage
+
+### GPIB Setup
+The gpib kernel module needs to be rebuilt after kernel updates. After the standard `make` and  `make install`, remember to modprobe it:
+
+```bash
+modprobe ni_usb_gpib
+```
   
 ### Setup Page
 Run with `python3 reform-v2.py`. Will launch locally hosted web server likely accessible at [http://127.0.0.1:5000](http://127.0.0.1:5000). The test may be configured using values for:  
